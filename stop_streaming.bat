@@ -1,3 +1,6 @@
+:: Reverts changes made by start_streaming.bat and restores the system to its
+:: original state for regular desktop use.
+
 @echo off
 :: Check for administrative permissions
 NET SESSION >nul 2>&1
@@ -14,27 +17,29 @@ set FPS=175
 set /a LIMIT=%FPS%-3
 set HDR=false
 
-rem Disable the virtual display
+:: Disable the virtual display
 devcon disable "MONITOR\LNX0000"
 devcon disable "root\iddsampledriver"
 
-rem Set resolution using QRes
+:: Wait for the virtual display to be disabled
+timeout /t 3 /nobreak >nul
+
+:: Set resolution using QRes
 cmd /C "C:\Tools\QRes\QRes.exe /X:%WIDTH% /Y:%HEIGHT% /R:%FPS%"
 
-rem Set HDR using HDRCmd
+:: Set HDR using HDRCmd
 cmd /C if "%HDR%"=="true" (C:\Tools\HDRTray\HDRCmd on) else (C:\Tools\HDRTray\HDRCmd off)
 
-:: rem Set FPS limit using frl-toggle
-:: cmd /C "C:\Tools\frl-toggle\frltoggle.exe %LIMIT%"
-
-rem Set FPS limit using rtss-cli
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %FPS%"
-
-rem Disable limiter using rtss-cli
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
-
-rem Turn on G-Sync using gsynctoggle
+:: Turn on G-Sync using gsynctoggle
 C:\Tools\gsync-toggle\gsynctoggle 1
 
+:: Set FPS limit using frl-toggle
+cmd /C "C:\Tools\frl-toggle\frltoggle.exe %LIMIT%"
+
+:: Set FPS limiter and overlay using rtss-cli
+:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %FPS%"
+:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
+:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
+
 :: Add a delay to ensure all commands complete before closing
-timeout /t 5 /nobreak >nul
+timeout /t 2 /nobreak >nul
