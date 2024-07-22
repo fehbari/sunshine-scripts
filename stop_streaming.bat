@@ -14,6 +14,10 @@ set FPS=175
 set /a LIMIT=%FPS%-3
 set HDR=false
 
+rem Disable the virtual display
+devcon disable "MONITOR\LNX0000"
+devcon disable "root\iddsampledriver"
+
 rem Set resolution using QRes
 cmd /C "C:\Tools\QRes\QRes.exe /X:%WIDTH% /Y:%HEIGHT% /R:%FPS%"
 
