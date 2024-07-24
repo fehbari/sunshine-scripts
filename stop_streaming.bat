@@ -37,9 +37,9 @@ C:\Tools\gsync-toggle\gsynctoggle 1
 cmd /C "C:\Tools\frl-toggle\frltoggle.exe %LIMIT%"
 
 :: Set FPS limiter and overlay using rtss-cli
-:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %FPS%"
-:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
-:: cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
+cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %FPS%"
+cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
+cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
 
 :: Add a delay to ensure all commands complete before closing
 timeout /t 2 /nobreak >nul
