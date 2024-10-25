@@ -14,6 +14,8 @@ This repository contains scripts to manage the setup and teardown of a game stre
   - [Optional Tools](#optional-tools)
   - [One-Time Setup: Virtual Display as Main Display](#one-time-setup-virtual-display-as-main-display)
 - [Configuration](#configuration)
+  - [Sunshine Settings](#sunshine-settings)
+  - [Optional Failure Recovery](#optional-failure-recovery)
 - [Scripts](#scripts)
   - [`start_streaming.bat`](#start_streamingbat)
   - [`stop_streaming.bat`](#stop_streamingbat)
@@ -71,6 +73,8 @@ Windows will now automatically switch between displays when starting or stopping
 ---
 
 ## Configuration
+
+### Sunshine Settings
 
 To fully automate the process, download the scripts from this repository and place them in the `C:\Tools\sunshine-scripts` folder. Then, configure these scripts in the [Sunshine web interface](https://localhost:47990/config):
 
