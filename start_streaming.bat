@@ -13,8 +13,9 @@ IF %ERRORLEVEL% NEQ 0 (
 :: Set variables
 IF NOT DEFINED SUNSHINE_CLIENT_WIDTH set SUNSHINE_CLIENT_WIDTH=1920
 IF NOT DEFINED SUNSHINE_CLIENT_HEIGHT set SUNSHINE_CLIENT_HEIGHT=1080
-IF NOT DEFINED SUNSHINE_CLIENT_FPS set SUNSHINE_CLIENT_FPS=120
-IF NOT DEFINED SUNSHINE_CLIENT_HDR set SUNSHINE_CLIENT_HDR=true
+IF NOT DEFINED SUNSHINE_CLIENT_FPS set SUNSHINE_CLIENT_FPS=60
+IF NOT DEFINED SUNSHINE_CLIENT_HDR set SUNSHINE_CLIENT_HDR=false
+if not DEFINED USE_RTSS set USE_RTSS=false
 
 :: Enable the virtual display
 devcon enable "root\iddsampledriver"
@@ -36,9 +37,11 @@ C:\Tools\gsync-toggle\gsynctoggle 0
 cmd /C "C:\Tools\frl-toggle\frltoggle.exe %SUNSHINE_CLIENT_FPS%"
 
 :: Set FPS limiter and overlay using rtss-cli
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %SUNSHINE_CLIENT_FPS%"
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 1"
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
+IF %USE_RTSS%==true (
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %SUNSHINE_CLIENT_FPS%"
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 1"
+)
 
 :: Add a delay to ensure all commands complete before closing
 timeout /t 2 /nobreak >nul

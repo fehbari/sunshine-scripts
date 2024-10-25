@@ -10,12 +10,15 @@ IF %ERRORLEVEL% NEQ 0 (
     EXIT /B
 )
 
-:: Set variables
-set WIDTH=3440
-set HEIGHT=1440
-set FPS=175
-set /a LIMIT=%FPS%-3
-set HDR=false
+:: Set variables from the environment, or use default values.
+:: The FPS limit is set to 3 less than the target refresh rate, as it's the
+:: recommended value for variable refresh rate displays.
+IF NOT DEFINED WIDTH set WIDTH=1920
+IF NOT DEFINED HEIGHT set HEIGHT=1080
+IF NOT DEFINED REFRESH set FPS=60
+set /a LIMIT=%REFRESH%-3
+IF NOT DEFINED HDR set HDR=false
+if not DEFINED USE_RTSS set USE_RTSS=false
 
 :: Disable the virtual display
 devcon disable "MONITOR\LNX0000"
@@ -25,7 +28,7 @@ devcon disable "root\iddsampledriver"
 timeout /t 3 /nobreak >nul
 
 :: Set resolution using QRes
-cmd /C "C:\Tools\QRes\QRes.exe /X:%WIDTH% /Y:%HEIGHT% /R:%FPS%"
+cmd /C "C:\Tools\QRes\QRes.exe /X:%WIDTH% /Y:%HEIGHT% /R:%REFRESH%"
 
 :: Set HDR using HDRCmd
 cmd /C if "%HDR%"=="true" (C:\Tools\HDRTray\HDRCmd on) else (C:\Tools\HDRTray\HDRCmd off)
@@ -37,9 +40,11 @@ C:\Tools\gsync-toggle\gsynctoggle 1
 cmd /C "C:\Tools\frl-toggle\frltoggle.exe %LIMIT%"
 
 :: Set FPS limiter and overlay using rtss-cli
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %FPS%"
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
-cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
+IF %USE_RTSS%==true (
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limit:set %LIMIT%"
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe limiter:set 0"
+    cmd /C "C:\Tools\rtss-cli\rtss-cli.exe overlay:set 0"
+)
 
 :: Add a delay to ensure all commands complete before closing
 timeout /t 2 /nobreak >nul
