@@ -53,7 +53,7 @@ All required tools, except the virtual display driver, are bundled and available
 ### Optional Tools
 
 - **[RTSS (RivaTuner Statistics Server)](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)** - Used for managing FPS limits and on-screen overlays. This is optional, as the NVIDIA frame limiter will be set via `frl-toggle` even without RTSS.
-- **[RTSS CLI](https://github.com/xanderfrangos/rtss-cli)** - Command-line interface for RTSS to manage FPS limits and overlays from scripts.
+- **[rtss-cli](https://github.com/xanderfrangos/rtss-cli)** - Command-line interface for RTSS to manage FPS limits and overlays from scripts.
 
 In both scripts (`start_streaming.bat` and `stop_streaming.bat`), an extra environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
 
@@ -156,7 +156,7 @@ This project heavily relies on the following open-source tools and utilities:
 - **[HDRTray](https://github.com/res2k/HDRTray)** - For controlling HDR settings.
 - **[gsync-toggle](https://github.com/FrogTheFrog/gsync-toggle)** - For toggling G-Sync on and off.
 - **[FRL-Toggle](https://github.com/FrogTheFrog/frl-toggle)** - For setting the NVIDIA frame rate limit.
-- **[RTSS CLI](https://github.com/xanderfrangos/rtss-cli)** - For controlling RTSS settings from the command line.
+- **[rtss-cli](https://github.com/xanderfrangos/rtss-cli)** - For controlling RTSS settings from the command line.
 
 And of course:
 
