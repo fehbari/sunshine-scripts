@@ -81,7 +81,7 @@ To fully automate the process, download the scripts from this repository and pla
    ```
 3. Set the **Undo Command** to:
    ```cmd
-   cmd /C set WIDTH=3440 & set HEIGHT=1440 & set REFRESH=175 & set HDR=false & set USE_RTSS=true & C:\Tools\sunshine-scripts\stop_streaming.bat
+   cmd /C set WIDTH=1920 & set HEIGHT=1080 & set REFRESH=60 & set HDR=false & set USE_RTSS=true & C:\Tools\sunshine-scripts\stop_streaming.bat
    ```
    - **Important**: Edit the `WIDTH`, `HEIGHT`, `REFRESH`, `HDR`, and `USE_RTSS` values to match your monitor’s resolution, refresh rate, and whether or not you want to use RTSS for **regular desktop use** (i.e., when you're not streaming). These values will be passed to the `stop_streaming.bat` script when the streaming session ends.
 4. Check the **Run As Admin** box for both commands.
