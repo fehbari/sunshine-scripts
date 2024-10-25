@@ -98,6 +98,7 @@ You can configure a task in **Windows Task Scheduler** to revert your system to 
    - Open **Task Scheduler** in Windows.
    - In the right-hand pane, click on **Import Task**.
    - Browse and select the `stop_streaming_task.xml` file.
+   - Check the option to *"Run with highest privileges"*, in order to avoid seeing a UAC prompt.
    - Review the settings and click **OK** to import the task.
 
 3. (Optional) Test the task by restarting your computer to ensure that the `stop_streaming.bat` script runs automatically and your settings revert to normal.
