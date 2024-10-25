@@ -4,7 +4,7 @@
 
 # Sunshine Automation Scripts
 
-This repository contains scripts to manage the setup and teardown of a game streaming session using the Sunshine server. The scripts automate system changes, such as enabling a virtual display, adjusting resolution, refresh rate, HDR, G-Sync, and FPS limits for optimal streaming.
+This repository contains scripts to manage the setup and teardown of a game streaming session using the Sunshine server on your host PC. The scripts automate system changes, such as enabling a virtual display, adjusting resolution, refresh rate, HDR, G-Sync, and FPS limits for optimal streaming.
 
 ## Table of Contents
 
@@ -87,6 +87,21 @@ To fully automate the process, download the scripts from this repository and pla
 4. Check the **Run As Admin** box for both commands.
 
 This setup will automate the execution of the scripts whenever Moonlight starts or stops a streaming session.
+
+### Optional Failure Recovery
+
+You can configure a task in **Windows Task Scheduler** to revert your system to its default settings if something goes wrong during streaming or if you forget to stop the stream. This task will run the `stop_streaming.bat` script at login, ensuring your computer reverts to its normal settings after a restart.
+
+1. Download the [stop_streaming_task.xml](stop_streaming_task.xml) file, which is preconfigured to run `stop_streaming.bat` at login.
+
+2. Import the task into **Windows Task Scheduler**:
+   - Open **Task Scheduler** in Windows.
+   - In the right-hand pane, click on **Import Task**.
+   - Browse and select the `stop_streaming_task.xml` file.
+   - Check the option to *"Run with highest privileges"*, in order to avoid seeing a UAC prompt.
+   - Review the settings and click **OK** to import the task.
+
+3. (Optional) Test the task by restarting your computer to ensure that the `stop_streaming.bat` script runs automatically and your settings revert to normal.
 
 ---
 
