@@ -12,9 +12,9 @@ This repository contains scripts to manage the setup and teardown of a game stre
 - [Requirements](#requirements)
   - [Required Tools](#required-tools)
   - [Optional Tools](#optional-tools)
-  - [One-Time Setup: Virtual Display as Main Display](#one-time-setup-virtual-display-as-main-display)
 - [Configuration](#configuration)
   - [Sunshine Settings](#sunshine-settings)
+  - [Set Virtual Display as Main Display](#set-virtual-display-as-main-display)
   - [Optional Failure Recovery](#optional-failure-recovery)
 - [Scripts](#scripts)
   - [`start_streaming.bat`](#start_streamingbat)
@@ -59,17 +59,6 @@ All required tools, except the virtual display driver, are bundled and available
 
 In both scripts (`start_streaming.bat` and `stop_streaming.bat`), an extra environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
 
-### One-Time Setup: Virtual Display as Main Display
-
-After installing the **Virtual Display Driver**, you will need to set the virtual display as your main display in Windows **Display Settings**. This step ensures that Windows automatically switches between the virtual display (during streaming) and your primary display (when not streaming). This setup is only needed once.
-
-To set the virtual display as the main display:
-1. Open **Settings** > **System** > **Display**.
-2. Scroll down to **Multiple Displays**.
-3. Select the virtual display, and check **Make this my main display**.
-   
-Windows will now automatically switch between displays when starting or stopping a stream.
-
 ---
 
 ## Configuration
@@ -91,6 +80,17 @@ To fully automate the process, download the scripts from this repository and pla
 4. Check the **Run As Admin** box for both commands.
 
 This setup will automate the execution of the scripts whenever Moonlight starts or stops a streaming session.
+
+### Set Virtual Display as Main Display
+
+After installing the **Virtual Display Driver**, you will need to set the virtual display as your main display in Windows **Display Settings**. This step ensures that Windows automatically switches between the virtual display (during streaming) and your primary display (when not streaming). This setup is only needed once.
+
+To set the virtual display as the main display:
+1. Open **Settings** > **System** > **Display**.
+2. Scroll down to **Multiple Displays**.
+3. Select the virtual display, and check **Make this my main display**.
+
+Windows will now automatically switch between displays when starting or stopping a stream.
 
 ### Optional Failure Recovery
 
