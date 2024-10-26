@@ -48,7 +48,7 @@ All required tools, except the virtual display driver, are bundled and available
 2. **[QRes](https://sourceforge.net/projects/qres/)** - A tool to set display resolution and refresh rate.
 3. **[HDRTray](https://github.com/res2k/HDRTray)** - A command-line tool for toggling HDR.
 4. **[gsync-toggle](https://github.com/FrogTheFrog/gsync-toggle)** - A tool for toggling G-Sync on and off.
-5. **[FRL-Toggle](https://github.com/FrogTheFrog/frl-toggle)** - A tool to set the frame rate limit (FRL) for NVIDIA GPUs.
+5. **[frl-toggle](https://github.com/FrogTheFrog/frl-toggle)** - A tool to set the frame rate limit (FRL) for NVIDIA GPUs.
 
 *Disclaimer*: I am not the author of these tools and cannot guarantee their safety or functionality. Use them at your own risk.
 
@@ -159,7 +159,7 @@ This project heavily relies on the following open-source tools and utilities:
 - **[QRes](https://sourceforge.net/projects/qres/)** - For managing display resolution.
 - **[HDRTray](https://github.com/res2k/HDRTray)** - For controlling HDR settings.
 - **[gsync-toggle](https://github.com/FrogTheFrog/gsync-toggle)** - For toggling G-Sync on and off.
-- **[FRL-Toggle](https://github.com/FrogTheFrog/frl-toggle)** - For setting the NVIDIA frame rate limit.
+- **[frl-toggle](https://github.com/FrogTheFrog/frl-toggle)** - For setting the NVIDIA frame rate limit.
 - **[rtss-cli](https://github.com/xanderfrangos/rtss-cli)** - For controlling RTSS settings from the command line.
 
 And of course:
