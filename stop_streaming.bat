@@ -24,8 +24,7 @@ IF "%USE_RTSS%"=="true" (
 )
 
 :: Disable the virtual display
-PNPUTIL /disable-device /deviceid "MONITOR\LNX0000"
-PNPUTIL /disable-device /deviceid "root\iddsampledriver"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$device = Get-PnpDevice | Where-Object {$_.FriendlyName -eq 'Virtual Display Driver by MTT'}; if ($device) { Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false }"
 
 :: Wait for the virtual display to be disabled
 timeout /t 3 /nobreak >nul
