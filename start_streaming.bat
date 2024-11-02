@@ -1,21 +1,24 @@
 :: Prepares the system for game stream by enabling the virtual display and setting
 :: the resolution, refresh rate, HDR, G-Sync, FPS limit, and overlay.
-
 @echo off
-:: Check for administrative permissions
-NET SESSION >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 (
-    :: If not run as administrator, relaunch the script with elevated privileges
-    powershell -Command "Start-Process cmd.exe -ArgumentList '/c %~s0' -Verb RunAs"
-    EXIT /B
-)
 
-:: Set variables
+:: Set variables from the environment, or use default values.
 IF NOT DEFINED SUNSHINE_CLIENT_WIDTH set SUNSHINE_CLIENT_WIDTH=1920
 IF NOT DEFINED SUNSHINE_CLIENT_HEIGHT set SUNSHINE_CLIENT_HEIGHT=1080
 IF NOT DEFINED SUNSHINE_CLIENT_FPS set SUNSHINE_CLIENT_FPS=60
 IF NOT DEFINED SUNSHINE_CLIENT_HDR set SUNSHINE_CLIENT_HDR=false
-if not DEFINED USE_RTSS set USE_RTSS=false
+IF NOT DEFINED USE_RTSS set USE_RTSS=false
+
+:: Check for administrative permissions if necessary. At this point, we only need
+:: admin permissions when using RTSS.
+IF "%USE_RTSS%"=="true" (
+    NET SESSION >nul 2>&1
+    IF %ERRORLEVEL% NEQ 0 (
+        :: If not runnign as admin, relaunch the script with elevated privileges
+        powershell -Command "Start-Process cmd.exe -ArgumentList '/c %~s0' -Verb RunAs"
+        EXIT /B
+    )
+)
 
 :: Enable the virtual display
 devcon enable "root\iddsampledriver"

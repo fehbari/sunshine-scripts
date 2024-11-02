@@ -32,7 +32,7 @@ Follow the links above for installation instructions if these are not yet set up
 
 **Important Notes**:
 - These scripts are tailored for PCs with **NVIDIA graphics cards** and **G-Sync or G-Sync compatible monitors**.
-- If you have an AMD setup and there’s enough interest, I might provide AMD-compatible versions of these scripts in the future.
+- If you have an AMD setup and there’s enough interest, I might provide AMD-compatible versions of these scripts in the future. I'm open to contributions if you want to help with that. Please refer to the [AMD support issue](https://github.com/fehbari/sunshine-scripts/issues/4) for more information.
 
 ---
 
