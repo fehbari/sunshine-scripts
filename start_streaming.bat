@@ -21,8 +21,7 @@ IF "%USE_RTSS%"=="true" (
 )
 
 :: Enable the virtual display
-PNPUTIL /enable-device /deviceid "root\iddsampledriver"
-PNPUTIL /enable-device /deviceid "MONITOR\LNX0000"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$device = Get-PnpDevice | Where-Object {$_.FriendlyName -eq 'Virtual Display Driver by MTT'}; if ($device) { Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false }"
 
 :: Wait for the virtual display to be ready
 timeout /t 3 /nobreak >nul
