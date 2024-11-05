@@ -1,4 +1,13 @@
-*.* text eol=crlf
+﻿# Automatically detect text files and normalize line endings to CRLF
+# This is important in mixed environments where Git might be using LF line
+# endings with WSL for *nix compatibility, but Windows tools require CRLF.
+* text=auto eol=crlf
+
+# Ensure proper encoding for XML files
+*.xml text working-tree-encoding=UTF-8
+
+# Remove encoding management for Task Scheduler files. They are always UTF-16.
+stop_streaming_task.xml -text
 
 # Binary files that should be left untouched
 *.png binary
