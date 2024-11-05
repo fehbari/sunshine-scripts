@@ -1,5 +1,5 @@
 ![Windows](https://img.shields.io/badge/platform-Windows-blue.svg)
-![Batch](https://img.shields.io/badge/language-Batch-yellow.svg)
+![PowerShell](https://img.shields.io/badge/language-Powershell-yellow.svg)
 ![gpu](https://img.shields.io/badge/gpu-NVIDIA-green.svg)
 
 # Sunshine Automation Scripts
@@ -17,8 +17,8 @@ This repository contains scripts to manage the setup and teardown of a game stre
   - [Set Virtual Display as Main Display](#set-virtual-display-as-main-display)
   - [Optional Failure Recovery](#optional-failure-recovery)
 - [Scripts](#scripts)
-  - [`start_streaming.bat`](#start_streamingbat)
-  - [`stop_streaming.bat`](#stop_streamingbat)
+  - [`start_streaming`](#start_streaming)
+  - [`stop_streaming`](#stop_streaming)
   - [`IddSampleDriver/option.txt`](#iddsampledriveroptiontxt)
 - [Attributions](#attributions)
 
@@ -57,7 +57,7 @@ All required tools, except the virtual display driver, are bundled and available
 - **[RTSS (RivaTuner Statistics Server)](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)** - Used for managing FPS limits and on-screen overlays. This is optional, as the NVIDIA frame limiter will be set via `frl-toggle` even without RTSS.
 - **[rtss-cli](https://github.com/xanderfrangos/rtss-cli)** - Command-line interface for RTSS to manage FPS limits and overlays from scripts.
 
-In both scripts (`start_streaming.bat` and `stop_streaming.bat`), an extra environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
+In both scripts (`start_streaming` and `stop_streaming`), an extra environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
 
 ---
 
@@ -76,7 +76,7 @@ To fully automate the process, download the scripts from this repository and pla
    ```cmd
    cmd /C set WIDTH=1920 & set HEIGHT=1080 & set REFRESH=60 & set HDR=false & set USE_RTSS=false & C:\Tools\sunshine-scripts\stop_streaming.bat
    ```
-   - **Important**: Edit the `WIDTH`, `HEIGHT`, `REFRESH`, `HDR`, and `USE_RTSS` values to match your monitor’s resolution, refresh rate, and whether or not you want to use RTSS for **regular desktop use** (i.e., when you're not streaming). These values will be passed to the `stop_streaming.bat` script when the streaming session ends.
+   - **Important**: Edit the `WIDTH`, `HEIGHT`, `REFRESH`, `HDR`, and `USE_RTSS` values to match your monitor’s resolution, refresh rate, HDR preference and whether or not you want to use RTSS for **regular desktop use** (i.e., when you're not streaming). These values will be passed to the `stop_streaming.bat` script when the streaming session ends.
 4. Check the **Run As Admin** box for both commands.
 
 This setup will automate the execution of the scripts whenever Moonlight starts or stops a streaming session.
@@ -111,7 +111,7 @@ You can configure a task in **Windows Task Scheduler** to revert your system to 
 
 ## Scripts
 
-### `start_streaming.bat`
+### `start_streaming`
 
 This script prepares your system for streaming by enabling a virtual display, setting resolution, refresh rate, toggling HDR, disabling G-Sync, and adjusting FPS limits.
 
@@ -128,7 +128,7 @@ This script is automatically triggered by the Sunshine server when Moonlight sta
 
 ---
 
-### `stop_streaming.bat`
+### `stop_streaming`
 
 This script restores your system to its normal desktop configuration after streaming has ended.
 
