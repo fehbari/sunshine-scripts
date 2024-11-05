@@ -23,8 +23,20 @@ if (-not ([Security.Principal.WindowsPrincipal]::new(
 
 # Disable the virtual display
 Write-Output "Disabling virtual display..."
-Disable-PnpDevice -InstanceId "DISPLAY\LNX0000\1&28A6823A&3&UID256" -Confirm:$false -ErrorAction SilentlyContinue
-Disable-PnpDevice -InstanceId "ROOT\DISPLAY\0000" -Confirm:$false -ErrorAction SilentlyContinue
+
+# Search for the VDD device with either of the known friendly names
+$device = Get-PnpDevice | Where-Object {
+    $_.FriendlyName -eq "Virtual Display Driver by MTT" -or $_.FriendlyName -eq "IddSampleDriver Device HDR"
+}
+
+# Disable the device if found; otherwise, stop the script
+if ($device) {
+    Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
+    Write-Output "Disabled device: $($device.FriendlyName)"
+} else {
+    Write-Output "Error: No matching virtual display device found to disable. Exiting script."
+    exit
+}
 
 # Wait for the virtual display to be disabled
 Start-Sleep -Seconds 3

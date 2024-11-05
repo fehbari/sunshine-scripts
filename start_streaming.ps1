@@ -20,13 +20,24 @@ if (-not ([Security.Principal.WindowsPrincipal]::new(
 
 # Enable the virtual display
 Write-Output "Enabling virtual display..."
-Enable-PnpDevice -InstanceId "ROOT\DISPLAY\0000" -Confirm:$false
-Enable-PnpDevice -InstanceId "DISPLAY\LNX0000\1&28A6823A&3&UID256" -Confirm:$false
+
+# Search for the VDD device with either of the known friendly names
+$device = Get-PnpDevice | Where-Object {
+    $_.FriendlyName -eq "Virtual Display Driver by MTT" -or $_.FriendlyName -eq "IddSampleDriver Device HDR"
+}
+
+# Enable the device if found; otherwise, stop the script
+if ($device) {
+    Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
+    Write-Output "Enabled device: $($device.FriendlyName)"
+} else {
+    Write-Output "Error: No matching virtual display device found. Exiting script."
+    exit
+}
 
 # Wait for the virtual display to be ready
 Start-Sleep -Seconds 3
 
-# Set resolution using QRes
 # Set resolution using QRes
 $qresCmd = "C:\Tools\QRes\QRes.exe"
 $qresArgs = @("/X:$SUNSHINE_CLIENT_WIDTH", "/Y:$SUNSHINE_CLIENT_HEIGHT", "/R:$SUNSHINE_CLIENT_FPS")
