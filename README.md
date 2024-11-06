@@ -68,15 +68,21 @@ In both scripts (`start_streaming` and `stop_streaming`), an extra environment v
 To fully automate the process, download the scripts from this repository and place them in the `C:\Tools\sunshine-scripts` folder. Then, configure these scripts in the [Sunshine web interface](https://localhost:47990/config):
 
 1. Go to **Configuration > General > Command Preparations**.
+
 2. Set the **Do Command** to:
    ```cmd
-   cmd /C set USE_RTSS=false & C:\Tools\sunshine-scripts\start_streaming.bat
+   cmd /c C:\Tools\sunshine-scripts\start_streaming.bat
    ```
+   See [start_streaming](#start_streaming) to learn all the additional parameters that can be passed to this script.
+
 3. Set the **Undo Command** to:
    ```cmd
-   cmd /C set WIDTH=1920 & set HEIGHT=1080 & set REFRESH=60 & set HDR=false & set USE_RTSS=false & C:\Tools\sunshine-scripts\stop_streaming.bat
+   cmd /c C:\Tools\sunshine-scripts\stop_streaming.bat -WIDTH 1920 -HEIGHT 1080 -REFRESH 60 -HDR false
    ```
-   - **Important**: Edit the `WIDTH`, `HEIGHT`, `REFRESH`, `HDR`, and `USE_RTSS` values to match your monitor’s resolution, refresh rate, HDR preference and whether or not you want to use RTSS for **regular desktop use** (i.e., when you're not streaming). These values will be passed to the `stop_streaming.bat` script when the streaming session ends.
+   **Important**: Edit the `WIDTH`, `HEIGHT`, `REFRESH` and `HDR` values to match your monitor’s resolution, refresh rate and HDR preference for **regular desktop use**, when the streaming session ends.
+   
+   See [stop_streaming](#stop_streaming) to learn all the additional parameters that can be passed to this script.
+
 4. Check the **Run As Admin** box for both commands.
 
 This setup will automate the execution of the scripts whenever Moonlight starts or stops a streaming session.
@@ -124,7 +130,18 @@ This script is automatically triggered by the Sunshine server when Moonlight sta
 - Sets the resolution and refresh rate with `QRes` based on the Moonlight client’s settings.
 - Toggles HDR on/off using `HDRTray`.
 - Disables G-Sync for the streaming session using `gsync-toggle`.
-- Sets the FPS limit using `frl-toggle` and `RTSS` (if enabled via `USE_RTSS`).
+- Sets the global FPS limit in the Nvidia Control Panel using `frl-toggle`.
+- If enabled via `USE_RTSS`, sets the global FPS limit using `RTSS` and disables its overlay while streaming.
+
+#### Parameters:
+
+- **WIDTH** - The width of the virtual display. **Default:** 1920, or the width passed by the Moonlight client.
+- **HEIGHT** - The height of the virtual display. **Default:** 1080, or the height passed by the Moonlight client.
+- **REFRESH** - The refresh rate of the virtual display. **Default:** 60, or the target FPS passed by the Moonlight client.
+- **FPS** - The FPS limit for the stream. **Default:** 60, or the target FPS passed by the Moonlight client.
+- **HDR** - Whether to enable HDR. **Default:** false, or the HDR setting passed by the Moonlight client.
+- **USE_RTSS** - Whether to use RTSS for FPS limiting and turn off its overlay while streaming. **Default:** false.
+- **DEBUG** - Whether to enable debug mode and view additional information. **Default:** false.
 
 ---
 
@@ -141,7 +158,18 @@ This script is automatically triggered by the Sunshine server when Moonlight sto
 - Restores the resolution and refresh rate for your primary display.
 - Toggles HDR off using `HDRTray`.
 - Re-enables G-Sync using `gsync-toggle`.
-- Resets the FPS limit using `frl-toggle` and `RTSS` (if enabled via `USE_RTSS`).
+- Resets the global FPS limit in the Nvidia Control Panel using `frl-toggle`.
+- If enabled via `USE_RTSS`, restores the FPS limit set in RTSS. The overlay remains disabled regardless of the parameter value.
+
+#### Parameters:
+
+- **WIDTH** - The width of the primary display. **Default:** 1920.
+- **HEIGHT** - The height of the primary display. **Default:** 1080.
+- **REFRESH** - The refresh rate of the primary display. **Default:** 60.
+- **FPS** - The FPS limit for non-streaming gameplay. **Default:** Refresh rate - 3, as recommended for variable refresh rate displays.
+- **HDR** - Whether to enable HDR. **Default:** false.
+- **USE_RTSS** - Whether to restore the FPS limit set in RTSS. Keeps the overlay disabled regardless of the parameter value. **Default:** false.
+- **DEBUG** - Whether to enable debug mode and view additional information. **Default:** false.
 
 ---
 

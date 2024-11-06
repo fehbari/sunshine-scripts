@@ -1,23 +1,36 @@
 # Reverts changes made by start_streaming.ps1 and restores the system to its
 # original state for regular desktop use.
 
-# Set variables from the environment or use default values.
-# The FPS limit is set to 3 less than the target refresh rate, as it's the
-# recommended value for variable refresh rate displays.
-$WIDTH = if ($Env:WIDTH -ne $null) { $Env:WIDTH } else { 1920 }
-$HEIGHT = if ($Env:HEIGHT -ne $null) { $Env:HEIGHT } else { 1080 }
-$REFRESH = if ($Env:REFRESH -ne $null) { $Env:REFRESH } else { 60 }
-$HDR = if ($Env:HDR -ne $null) { $Env:HDR } else { "false" }
-$USE_RTSS = if ($Env:USE_RTSS -ne $null) { $Env:USE_RTSS } else { "false" }
-$LIMIT = [int]$REFRESH - 3  # Recommended FPS limit for VRR displays
+# Read parameters passed to the script, or use defaults
+param(
+    [int] $WIDTH = 1920,
+    [int] $HEIGHT = 1080,
+    [int] $REFRESH = 60,
+    [int] $FPS = 0,
+    [string] $HDR = "false",
+    [string] $USE_RTSS = "false",
+    [string] $DEBUG = "false"
+)
+
+# Set FPS limit by default to 3 less than the target refresh rate, as it's the
+# recommended value for variable refresh rate displays. This value can be overridden
+# by the FPS parameter, to customize a limit independent from the refresh rate.
+$LIMIT = if ($FPS -eq 0) { $REFRESH - 3 } else { $FPS }
 
 # Restart script with elevated privileges if not already admin
 if (-not ([Security.Principal.WindowsPrincipal]::new(
-        [Security.Principal.WindowsIdentity]::GetCurrent()
-    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)))
-{
-    Start-Process PowerShell `
-        -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+            [Security.Principal.WindowsIdentity]::GetCurrent()
+        ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))) {
+
+    # Capture the current arguments
+    $arguments = @()
+    foreach ($key in $PSBoundParameters.Keys) {
+        $value = $PSBoundParameters[$key]
+        $arguments += "-$key `"$value`""
+    }
+    $argumentString = $arguments -join ' '
+
+    Start-Process PowerShell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" $argumentString"
     exit
 }
 
@@ -33,7 +46,8 @@ $device = Get-PnpDevice | Where-Object {
 if ($device) {
     Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
     Write-Output "Disabled device: $($device.FriendlyName)"
-} else {
+}
+else {
     Write-Output "Error: No matching virtual display device found to disable. Exiting script."
     exit
 }
@@ -43,9 +57,9 @@ Start-Sleep -Seconds 3
 
 # Set resolution using QRes
 $qresCmd = "C:\Tools\QRes\QRes.exe"
-$qresArgs = @("/X:$WIDTH /Y:$HEIGHT /R:$REFRESH")
+$qresArgs = @("/X:$WIDTH", "/Y:$HEIGHT", "/R:$REFRESH")
 Write-Output "Setting resolution with QRes: $qresCmd $($qresArgs -join ' ')"
-& $qresCmd @qresArgs > $null
+if ($DEBUG -eq "true") { & $qresCmd @qresArgs } else { & $qresCmd @qresArgs > $null }
 
 # Wait for the resolution to be set
 Start-Sleep -Seconds 2
@@ -85,5 +99,10 @@ if ($USE_RTSS -eq "true") {
     & $rtssLimitCmd $rtssOverlayArgs
 }
 
-# Wait a moment to ensure all commands complete
-Start-Sleep -Seconds 2
+# Wait to ensure all commands complete, or wait for user input if in debug mode
+if ($DEBUG -eq "true") {
+    Read-Host "Debug mode enabled. Press Enter to exit..."
+}
+else {
+    Start-Sleep -Seconds 2
+}

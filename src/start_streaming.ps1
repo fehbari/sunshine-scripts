@@ -1,20 +1,42 @@
 # Prepares the system for game stream by enabling the virtual display and setting
 # the resolution, refresh rate, HDR, G-Sync, FPS limit, and overlay.
 
-# Set variables from the environment or use default values
-$SUNSHINE_CLIENT_WIDTH = if ($Env:SUNSHINE_CLIENT_WIDTH -ne $null) { $Env:SUNSHINE_CLIENT_WIDTH } else { 1920 }
-$SUNSHINE_CLIENT_HEIGHT = if ($Env:SUNSHINE_CLIENT_HEIGHT -ne $null) { $Env:SUNSHINE_CLIENT_HEIGHT } else { 1080 }
-$SUNSHINE_CLIENT_FPS = if ($Env:SUNSHINE_CLIENT_FPS -ne $null) { $Env:SUNSHINE_CLIENT_FPS } else { 60 }
-$SUNSHINE_CLIENT_HDR = if ($Env:SUNSHINE_CLIENT_HDR -ne $null) { $Env:SUNSHINE_CLIENT_HDR } else { "false" }
-$USE_RTSS = if ($Env:USE_RTSS -ne $null) { $Env:USE_RTSS } else { "false" }
+# Read parameters passed to the script, or use defaults
+param(
+    [int] $WIDTH = 1920,
+    [int] $HEIGHT = 1080,
+    [int] $REFRESH = 60,
+    [int] $FPS = 0,
+    [string] $HDR = "false",
+    [string] $USE_RTSS = "false",
+    [string] $DEBUG = "false"
+)
+
+# Set variables from the Sunshine environment, or use defaults
+$CLIENT_WIDTH = if ($null -ne $Env:SUNSHINE_CLIENT_WIDTH) { $Env:SUNSHINE_CLIENT_WIDTH } else { $WIDTH }
+$CLIENT_HEIGHT = if ($null -ne $Env:SUNSHINE_CLIENT_HEIGHT) { $Env:SUNSHINE_CLIENT_HEIGHT } else { $HEIGHT }
+$CLIENT_REFRESH = if ($null -ne $Env:SUNSHINE_CLIENT_FPS) { $Env:SUNSHINE_CLIENT_FPS } else { $REFRESH }
+$CLIENT_HDR = if ($null -ne $Env:SUNSHINE_CLIENT_HDR) { $Env:SUNSHINE_CLIENT_HDR } else { $HDR }
+
+# Set FPS limit by default to the target refresh rate. This value can be overridden
+# by the FPS parameter, to customize a limit independent from the refresh rate.
+# This can be useful, for example, to run a game at 40 FPS on a 120 Hz display.
+$LIMIT = if ($FPS -eq 0) { $CLIENT_REFRESH } else { $FPS }
 
 # Restart script with elevated privileges if not already admin
 if (-not ([Security.Principal.WindowsPrincipal]::new(
-        [Security.Principal.WindowsIdentity]::GetCurrent()
-    ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)))
-{
-    Start-Process PowerShell `
-        -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+            [Security.Principal.WindowsIdentity]::GetCurrent()
+        ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))) {
+
+    # Capture the current arguments
+    $arguments = @()
+    foreach ($key in $PSBoundParameters.Keys) {
+        $value = $PSBoundParameters[$key]
+        $arguments += "-$key `"$value`""
+    }
+    $argumentString = $arguments -join ' '
+
+    Start-Process PowerShell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" $argumentString"
     exit
 }
 
@@ -30,7 +52,8 @@ $device = Get-PnpDevice | Where-Object {
 if ($device) {
     Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
     Write-Output "Enabled device: $($device.FriendlyName)"
-} else {
+}
+else {
     Write-Output "Error: No matching virtual display device found. Exiting script."
     exit
 }
@@ -40,16 +63,16 @@ Start-Sleep -Seconds 3
 
 # Set resolution using QRes
 $qresCmd = "C:\Tools\QRes\QRes.exe"
-$qresArgs = @("/X:$SUNSHINE_CLIENT_WIDTH", "/Y:$SUNSHINE_CLIENT_HEIGHT", "/R:$SUNSHINE_CLIENT_FPS")
+$qresArgs = @("/X:$CLIENT_WIDTH", "/Y:$CLIENT_HEIGHT", "/R:$CLIENT_REFRESH")
 Write-Output "Setting resolution with QRes: $qresCmd $($qresArgs -join ' ')"
-& $qresCmd @qresArgs > $null
+if ($DEBUG -eq "true") { & $qresCmd @qresArgs } else { & $qresCmd @qresArgs > $null }
 
 # Wait for the resolution to be set
 Start-Sleep -Seconds 2
 
 # Set HDR using HDRCmd
 $hdrCmd = "C:\Tools\HDRTray\HDRCmd"
-$hdrArgs = if ($SUNSHINE_CLIENT_HDR -eq "true") { "on" } else { "off" }
+$hdrArgs = if ($CLIENT_HDR -eq "true") { "on" } else { "off" }
 Write-Output "Turning HDR $hdrArgs with HDRCmd: $hdrCmd $hdrArgs"
 & $hdrCmd $hdrArgs
 
@@ -61,14 +84,14 @@ Write-Output "Turning off G-Sync: $gsyncCmd $gsyncArgs"
 
 # Set FPS limit using frl-toggle
 $frlCmd = "C:\Tools\frl-toggle\frltoggle.exe"
-$frlArgs = "$SUNSHINE_CLIENT_FPS"
+$frlArgs = "$LIMIT"
 Write-Output "Setting FPS limit with frl-toggle: $frlCmd $frlArgs"
 & $frlCmd $frlArgs
 
 # Set FPS limiter and overlay using rtss-cli if RTSS is enabled
 if ($USE_RTSS -eq "true") {
     $rtssLimitCmd = "C:\Tools\rtss-cli\rtss-cli.exe"
-    $rtssLimitArgs = "limit:set $SUNSHINE_CLIENT_FPS"
+    $rtssLimitArgs = "limit:set $LIMIT"
     $rtssLimiterArgs = "limiter:set 0"
     $rtssOverlayArgs = "overlay:set 1"
 
@@ -82,5 +105,10 @@ if ($USE_RTSS -eq "true") {
     & $rtssLimitCmd $rtssOverlayArgs
 }
 
-# Wait a moment to ensure all commands complete
-Start-Sleep -Seconds 2
+# Wait to ensure all commands complete, or wait for user input if in debug mode
+if ($DEBUG -eq "true") {
+    Read-Host "Debug mode enabled. Press Enter to exit..."
+}
+else {
+    Start-Sleep -Seconds 2
+}
