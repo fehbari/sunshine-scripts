@@ -44,7 +44,7 @@ All required tools, except the virtual display driver, are bundled and available
 
 ### Required Tools
 
-1. **[Virtual-Display-Driver](https://github.com/itsmikethetech/Virtual-Display-Driver)** - A virtual display driver that enables a virtual monitor for streaming. Follow the installation instructions on their [GitHub page](https://github.com/itsmikethetech/Virtual-Display-Driver?tab=readme-ov-file#installation). **Important**: Ensure the provided [option.txt](IddSampleDriver/option.txt) file is placed at `C:\IddSampleDriver\options.txt` before installing.
+1. **[Virtual-Display-Driver](https://github.com/itsmikethetech/Virtual-Display-Driver)** - A virtual display driver that enables a virtual monitor for streaming. Follow the installation instructions on their [GitHub page](https://github.com/itsmikethetech/Virtual-Display-Driver?tab=readme-ov-file#installation). **Important**: Ensure the provided [option.txt](IddSampleDriver/option.txt) file is placed at `C:\IddSampleDriver\option.txt` before installing.
 2. **[QRes](https://sourceforge.net/projects/qres/)** - A tool to set display resolution and refresh rate.
 3. **[HDRTray](https://github.com/res2k/HDRTray)** - A command-line tool for toggling HDR.
 4. **[gsync-toggle](https://github.com/FrogTheFrog/gsync-toggle)** - A tool for toggling G-Sync on and off.
@@ -175,7 +175,7 @@ This script is automatically triggered by the Sunshine server when Moonlight sto
 
 ### `IddSampleDriver/option.txt`
 
-This file defines the supported resolutions and refresh rates for the virtual display used during streaming. Ensure it is placed at `C:\IddSampleDriver\options.txt` before installing the [Virtual Display Driver](https://github.com/itsmikethetech/Virtual-Display-Driver). You may edit the file as needed to match your client device's supported resolutions and refresh rates. Some common resolutions and refresh rates are already included for convenience.
+This file defines the supported resolutions and refresh rates for the virtual display used during streaming. Ensure it is placed at `C:\IddSampleDriver\option.txt` before installing the [Virtual Display Driver](https://github.com/itsmikethetech/Virtual-Display-Driver). You may edit the file as needed to match your client device's supported resolutions and refresh rates. Some common resolutions and refresh rates are already included for convenience.
 
 ---
 
