@@ -37,9 +37,10 @@ if (-not ([Security.Principal.WindowsPrincipal]::new(
 # Disable the virtual display
 Write-Output "Disabling virtual display..."
 
-# Search for the VDD device with either of the known friendly names
+# Search for the VDD device with one of the known friendly names
 $device = Get-PnpDevice | Where-Object {
-    $_.FriendlyName -eq "Virtual Display Driver by MTT" -or $_.FriendlyName -eq "IddSampleDriver Device HDR"
+    $_.FriendlyName -like "*Virtual Display Driver*" -or
+    $_.FriendlyName -like "*IddSampleDriver Device HDR*"
 }
 
 # Disable the device if found; otherwise, stop the script
