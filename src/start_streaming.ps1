@@ -53,6 +53,7 @@ $device = Get-PnpDevice | Where-Object {
 if ($device) {
     if ($device.Status -eq "Error") {
         Write-Output "Error: Virtual display device found but it has an error status. Exiting script."
+        Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
         exit
     }
     Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
