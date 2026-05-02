@@ -42,7 +42,7 @@ Follow the links above for installation instructions if these are not yet set up
 
 ### Tools
 
-All required tools, except the virtual display driver, are bundled and available for download in the [binaries folder](bin/) for convenience. A malware scan result is included. Alternatively, you can download the tools manually from their official sources if preferred. **Note**: The tools **must** be placed in the `C:\Tools` folder for the scripts to function correctly.
+All required tools, except the virtual display driver, are bundled and available for download in the [binaries folder](bin/) for convenience. A malware scan result is included. Alternatively, you can download the tools manually from their official sources if preferred. **Note**: The tools **must** be placed within the `C:\Tools` directory. The scripts will automatically search `C:\Tools` and any of its subfolders to find the executables, meaning you can keep them organized in separate folders and retain their original versioned filenames (e.g., `gsynctoggle-1.1.0-x86_64.exe`).
 
 ### Required Tools
 

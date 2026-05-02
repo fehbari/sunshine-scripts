@@ -109,48 +109,76 @@ else {
 # Wait for the virtual display to be ready
 Start-Sleep -Seconds 3
 
-# Set resolution using QRes
-$qresCmd = "C:\Tools\QRes\QRes.exe"
-$qresArgs = @("/X:$CLIENT_WIDTH", "/Y:$CLIENT_HEIGHT", "/R:$CLIENT_REFRESH")
-Write-Output "Setting resolution with QRes: $qresCmd $($qresArgs -join ' ')"
-if ($DEBUG -eq "true") { & $qresCmd @qresArgs } else { & $qresCmd @qresArgs > $null }
+# Helper function to dynamically find an executable with optional versioning in C:\Tools or its subdirectories
+function Get-ToolPath ($BaseName) {
+    # Search for the base name followed by anything, ending in .exe (e.g., "gsynctoggle*.exe")
+    $filter = "$BaseName*.exe"
+    
+    # Sort descending so if multiple versions exist, it attempts to grab the highest version first
+    $file = Get-ChildItem -Path "C:\Tools" -Filter $filter -Recurse -File -ErrorAction SilentlyContinue | 
+            Sort-Object Name -Descending | 
+            Select-Object -First 1
+
+    if ($file) {
+        return $file.FullName
+    } else {
+        Write-Warning "Could not find any executable matching '$filter' in C:\Tools or its subdirectories."
+        return $null
+    }
+}
+
+# Find and run QRes
+$qresCmd = Get-ToolPath "QRes"
+if ($qresCmd) {
+    $qresArgs = @("/X:$CLIENT_WIDTH", "/Y:$CLIENT_HEIGHT", "/R:$CLIENT_REFRESH")
+    Write-Output "Setting resolution with QRes: $qresCmd $($qresArgs -join ' ')"
+    if ($DEBUG -eq "true") { & $qresCmd @qresArgs } else { & $qresCmd @qresArgs > $null }
+}
 
 # Wait for the resolution to be set
 Start-Sleep -Seconds 2
 
 # Set HDR using HDRCmd
-$hdrCmd = "C:\Tools\HDRTray\HDRCmd"
-$hdrArgs = if ($CLIENT_HDR -eq "true") { "on" } else { "off" }
-Write-Output "Turning HDR $hdrArgs with HDRCmd: $hdrCmd $hdrArgs"
-& $hdrCmd $hdrArgs
+$hdrCmd = Get-ToolPath "HDRCmd"
+if ($hdrCmd) {
+    $hdrArgs = if ($CLIENT_HDR -eq "true") { "on" } else { "off" }
+    Write-Output "Turning HDR $hdrArgs with HDRCmd: $hdrCmd $hdrArgs"
+    & $hdrCmd $hdrArgs
+}
 
 # Turn off G-Sync using gsynctoggle
-$gsyncCmd = "C:\Tools\gsync-toggle\gsynctoggle"
-$gsyncArgs = "0"
-Write-Output "Turning off G-Sync: $gsyncCmd $gsyncArgs"
-& $gsyncCmd $gsyncArgs
+$gsyncCmd = Get-ToolPath "gsynctoggle"
+if ($gsyncCmd) {
+    $gsyncArgs = "0"
+    Write-Output "Turning off G-Sync: $gsyncCmd $gsyncArgs"
+    & $gsyncCmd $gsyncArgs
+}
 
 # Set FPS limit using frl-toggle
-$frlCmd = "C:\Tools\frl-toggle\frltoggle.exe"
-$frlArgs = "$LIMIT"
-Write-Output "Setting FPS limit with frl-toggle: $frlCmd $frlArgs"
-& $frlCmd $frlArgs
+$frlCmd = Get-ToolPath "frltoggle"
+if ($frlCmd) {
+    $frlArgs = "$LIMIT"
+    Write-Output "Setting FPS limit with frl-toggle: $frlCmd $frlArgs"
+    & $frlCmd $frlArgs
+}
 
 # Set FPS limiter and overlay using rtss-cli if RTSS is enabled
 if ($USE_RTSS -eq "true") {
-    $rtssLimitCmd = "C:\Tools\rtss-cli\rtss-cli.exe"
-    $rtssLimitArgs = "limit:set $LIMIT"
-    $rtssLimiterArgs = "limiter:set 0"
-    $rtssOverlayArgs = "overlay:set 1"
+    $rtssLimitCmd = Get-ToolPath "rtss-cli"
+    if ($rtssLimitCmd) {
+        $rtssLimitArgs = "limit:set $LIMIT"
+        $rtssLimiterArgs = "limiter:set 0"
+        $rtssOverlayArgs = "overlay:set 1"
 
-    Write-Output "Setting RTSS FPS limit: $rtssLimitCmd $rtssLimitArgs"
-    & $rtssLimitCmd $rtssLimitArgs
+        Write-Output "Setting RTSS FPS limit: $rtssLimitCmd $rtssLimitArgs"
+        & $rtssLimitCmd $rtssLimitArgs
 
-    Write-Output "Disabling RTSS limiter: $rtssLimitCmd $rtssLimiterArgs"
-    & $rtssLimitCmd $rtssLimiterArgs
+        Write-Output "Disabling RTSS limiter: $rtssLimitCmd $rtssLimiterArgs"
+        & $rtssLimitCmd $rtssLimiterArgs
 
-    Write-Output "Enabling RTSS overlay: $rtssLimitCmd $rtssOverlayArgs"
-    & $rtssLimitCmd $rtssOverlayArgs
+        Write-Output "Enabling RTSS overlay: $rtssLimitCmd $rtssOverlayArgs"
+        & $rtssLimitCmd $rtssOverlayArgs
+    }
 }
 
 # Wait to ensure all commands complete, or wait for user input if in debug mode
