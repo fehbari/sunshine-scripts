@@ -1,3 +1,5 @@
+
+
 ![Windows](https://img.shields.io/badge/platform-Windows-blue.svg)
 ![PowerShell](https://img.shields.io/badge/language-Powershell-yellow.svg)
 ![gpu](https://img.shields.io/badge/gpu-NVIDIA-green.svg)
@@ -60,7 +62,7 @@ All required tools, except the virtual display driver, are bundled and available
 - **[RTSS (RivaTuner Statistics Server)](https://www.guru3d.com/files-details/rtss-rivatuner-statistics-server-download.html)** - Used for managing FPS limits and on-screen overlays. This is optional, as the NVIDIA frame limiter will be set via `frl-toggle` even without RTSS.
 - **[rtss-cli](https://github.com/xanderfrangos/rtss-cli)** - Command-line interface for RTSS to manage FPS limits and overlays from scripts.
 
-In both scripts (`start_streaming` and `stop_streaming`), an extra environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
+In both scripts (`start_streaming` and `stop_streaming`), the `USE_RTSS` environment variable controls whether RTSS settings are applied. If you don’t have RTSS installed, set this variable to `false`.
 
 ---
 
